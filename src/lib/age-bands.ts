@@ -1,4 +1,4 @@
-export type AgeBand = "7-12" | "13-17" | "18-45" | "45-plus";
+export type AgeBand = "7-12" | "13-17" | "18-45" | "over-45";
 
 export interface AgeBandInfo {
   slug: AgeBand;
@@ -22,8 +22,8 @@ export const AGE_BANDS: Record<AgeBand, AgeBandInfo> = {
     title: "Ages 18–45",
     description: "Guidance for adults building financial foundations.",
   },
-  "45-plus": {
-    slug: "45-plus",
+  "over-45": {
+    slug: "over-45",
     title: "Ages 45+",
     description: "Signposting to pension and later-life guidance.",
   },
@@ -35,7 +35,7 @@ export type AgeValidationResult =
   | { status: "too-wise" };
 
 export function getAgeBand(age: number): AgeBand {
-  if (age >= 45) return "45-plus";
+  if (age >= 45) return "over-45";
   if (age >= 18) return "18-45";
   if (age >= 13) return "13-17";
   return "7-12";

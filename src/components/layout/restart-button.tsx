@@ -10,7 +10,7 @@ export function RestartButton() {
 
   function handleRestart() {
     clearUserData();
-    router.push("/");
+    router.push("/start/");
   }
 
   return (
