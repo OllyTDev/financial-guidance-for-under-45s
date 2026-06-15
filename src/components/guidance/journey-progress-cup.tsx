@@ -57,7 +57,7 @@ function getSectionPolygon(index: number): string {
 
 function getSectionOpacity(section: JourneySection, currentStep: number): number {
   if (currentStep >= section.step) return 1;
-  return 0.4;
+  return 0;
 }
 
 export function JourneyProgressCup({
@@ -157,7 +157,7 @@ export function JourneyProgressCup({
                 y={yCenter + 4}
                 fontSize="10"
                 fill="#3D3830"
-                fontWeight={isCurrent ? 600 : 400}
+                fontWeight={isCurrent ? 800 : 400}
               >
                 {section.title}
               </text>
@@ -169,7 +169,7 @@ export function JourneyProgressCup({
                   fill="#5C5346"
                   fontWeight="500"
                 >
-                  &lt;--- You are here
+                  You are here
                 </text>
               ) : null}
             </g>
