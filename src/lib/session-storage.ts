@@ -1,3 +1,5 @@
+import { clearJourneyProgress } from "@/lib/journey-progress";
+
 const USER_AGE_KEY = "fg-user-age";
 
 export function saveUserAge(age: number): void {
@@ -14,4 +16,5 @@ export function getUserAge(): number | null {
 
 export function clearUserData(): void {
   sessionStorage.removeItem(USER_AGE_KEY);
+  clearJourneyProgress();
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -9,6 +10,10 @@ import {
 } from "@/components/layout/page-shell";
 import { RestartButton } from "@/components/layout/restart-button";
 import { type AgeBand, AGE_BANDS } from "@/lib/age-bands";
+import {
+  FINANCES_INTRO_PATH,
+  isFinanceJourneyBand,
+} from "@/lib/journey-routes";
 import { getUserAge } from "@/lib/session-storage";
 
 interface GuidancePageContentProps {
@@ -19,6 +24,7 @@ export function GuidancePageContent({ band }: GuidancePageContentProps) {
   const router = useRouter();
   const [age, setAge] = useState<number | null>(null);
   const bandInfo = AGE_BANDS[band];
+  const hasFinanceJourney = isFinanceJourneyBand(band);
 
   useEffect(() => {
     const storedAge = getUserAge();
@@ -53,6 +59,17 @@ export function GuidancePageContent({ band }: GuidancePageContentProps) {
         <p className="mt-6 rounded-xl bg-cream-100 px-4 py-3 text-sand-800">
           Age entered: <span className="font-semibold">{age}</span>
         </p>
+
+        {hasFinanceJourney ? (
+          <div className="mt-8">
+            <Link
+              href={FINANCES_INTRO_PATH}
+              className="inline-flex h-12 items-center justify-center rounded-lg bg-sand-800 px-8 text-base font-medium text-white transition-colors hover:bg-sand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand-800 focus-visible:ring-offset-2"
+            >
+              Continue
+            </Link>
+          </div>
+        ) : null}
       </ContentCard>
     </PageShell>
   );
