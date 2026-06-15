@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useId } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -8,7 +8,7 @@ export interface CheckboxProps
 }
 
 export function Checkbox({ className, label, id, ...props }: CheckboxProps) {
-  const inputId = id ?? React.useId();
+  const inputId = useId();
 
   return (
     <label
