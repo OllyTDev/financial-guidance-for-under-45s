@@ -1,3 +1,4 @@
+import { clearEverydayLivingData } from "@/lib/everyday-living-storage";
 import { clearJourneyProgress } from "@/lib/journey-progress";
 
 const USER_AGE_KEY = "fg-user-age";
@@ -17,4 +18,5 @@ export function getUserAge(): number | null {
 export function clearUserData(): void {
   sessionStorage.removeItem(USER_AGE_KEY);
   clearJourneyProgress();
+  clearEverydayLivingData();
 }
