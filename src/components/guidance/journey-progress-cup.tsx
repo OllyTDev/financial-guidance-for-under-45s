@@ -45,6 +45,14 @@ function getSectionBounds(index: number): { yTop: number; yBottom: number } {
   return { yTop, yBottom };
 }
 
+function getSectionDividerY(index: number): number {
+  return getSectionBounds(index).yBottom;
+}
+
+function getInternalDividerIndices(): number[] {
+  return JOURNEY_SECTIONS.map((_, index) => index).slice(1);
+}
+
 function getSectionPolygon(index: number): string {
   const { yTop, yBottom } = getSectionBounds(index);
   return [
@@ -121,15 +129,15 @@ export function JourneyProgressCup({
             />
           ))}
 
-          {JOURNEY_SECTIONS.slice(0, -1).map((section, index) => {
-            const { yBottom } = getSectionBounds(index);
+          {getInternalDividerIndices().map((index) => {
+            const y = getSectionDividerY(index);
             return (
               <line
-                key={`divider-${section.slug}`}
-                x1={cupLeftAtY(yBottom)}
-                y1={yBottom}
-                x2={cupRightAtY(yBottom)}
-                y2={yBottom}
+                key={`divider-${JOURNEY_SECTIONS[index].slug}`}
+                x1={cupLeftAtY(y)}
+                y1={y}
+                x2={cupRightAtY(y)}
+                y2={y}
                 stroke="rgba(92, 83, 70, 0.15)"
                 strokeWidth="1"
               />
