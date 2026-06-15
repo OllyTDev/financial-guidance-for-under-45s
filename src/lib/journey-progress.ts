@@ -1,6 +1,11 @@
+import {
+  getSectionFillPercent,
+  JOURNEY_TOTAL_STEPS,
+} from "@/lib/journey-sections";
+
 const JOURNEY_PROGRESS_KEY = "fg-journey-progress";
 
-export const JOURNEY_TOTAL_STEPS = 5;
+export { JOURNEY_TOTAL_STEPS };
 
 export function getJourneyProgress(): number {
   const value = sessionStorage.getItem(JOURNEY_PROGRESS_KEY);
@@ -15,8 +20,7 @@ export function setJourneyProgress(step: number): void {
 }
 
 export function getJourneyFillPercent(step: number = getJourneyProgress()): number {
-  if (JOURNEY_TOTAL_STEPS <= 0) return 0;
-  return Math.min(100, Math.max(0, (step / JOURNEY_TOTAL_STEPS) * 100));
+  return getSectionFillPercent(step);
 }
 
 export function clearJourneyProgress(): void {
