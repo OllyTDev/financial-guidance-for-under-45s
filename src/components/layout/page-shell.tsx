@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { cn } from "@/lib/utils";
 
 interface PageShellProps {
@@ -56,7 +58,13 @@ export function PrivacyBadge({ className }: PrivacyBadgeProps) {
       <p className="font-medium text-sand-800">Your data stays on your device</p>
       <p className="mt-1">
         Nothing you enter is sent to a server. All calculations and information
-        remain on this device only.
+        remain on this device only.{" "}
+        <Link
+          href="/security/"
+          className="font-medium text-sand-800 underline decoration-sand-700/30 underline-offset-4 hover:decoration-sand-800"
+        >
+          Security &amp; privacy
+        </Link>
       </p>
     </div>
   );

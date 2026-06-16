@@ -11,7 +11,9 @@ import {
 } from "@/components/ui/currency-input";
 import { CurrencyInputWithPeriod } from "@/components/ui/currency-input-with-period";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { ExternalLink } from "@/components/ui/external-link";
 import { RadioGroup } from "@/components/ui/radio-group";
+import { GOVUK_COUNCIL_TAX_DISCOUNT_URL } from "@/lib/security/allowed-external-urls";
 import {
   EVERYDAY_LIVING_REVIEW_PATH,
   type EverydayLivingData,
@@ -24,9 +26,6 @@ import {
   isMortgageZero,
   saveEverydayLivingData,
 } from "@/lib/everyday-living-storage";
-
-const COUNCIL_TAX_DISCOUNT_URL =
-  "https://www.gov.uk/apply-for-council-tax-discount";
 
 function toInputValue(value: number | null): string {
   if (value === null) return "";
@@ -283,14 +282,9 @@ function CouncilTaxSection({
       {showCouncilTaxLink ? (
         <p className="text-sm text-sand-700">
           You may be eligible for a discount.{" "}
-          <a
-            href={COUNCIL_TAX_DISCOUNT_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-medium text-sand-800 underline decoration-sand-700/30 underline-offset-4 hover:decoration-sand-800"
-          >
+          <ExternalLink href={GOVUK_COUNCIL_TAX_DISCOUNT_URL}>
             Apply for a Council Tax discount on GOV.UK
-          </a>
+          </ExternalLink>
         </p>
       ) : null}
     </div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { Dialog } from "@/components/ui/dialog";
+import { ExternalLink } from "@/components/ui/external-link";
 import { CurrencyInputWithPeriod } from "@/components/ui/currency-input-with-period";
 import { parseCurrencyValue } from "@/components/ui/currency-input";
 import { RadioGroup } from "@/components/ui/radio-group";
@@ -16,9 +17,8 @@ import {
   type PaymentPeriod,
   isZeroIncome,
 } from "@/lib/everyday-living-storage";
+import { GOVUK_JSA_URL } from "@/lib/security/allowed-external-urls";
 import { getUserAge } from "@/lib/session-storage";
-
-const JSA_URL = "https://www.gov.uk/jobseekers-allowance";
 
 interface IncomeSectionProps {
   data: EverydayLivingData;
@@ -127,14 +127,9 @@ export function IncomeSection({ data, onUpdate }: IncomeSectionProps) {
             .
           </p>
           <p>
-            <a
-              href={JSA_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-sand-800 underline decoration-sand-700/30 underline-offset-4 hover:decoration-sand-800"
-            >
+            <ExternalLink href={GOVUK_JSA_URL}>
               Find out about Jobseeker&apos;s Allowance on GOV.UK
-            </a>
+            </ExternalLink>
           </p>
           {!data.usingJsaAsIncome ? (
             <button

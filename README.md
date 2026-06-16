@@ -30,6 +30,8 @@ Static files are output to `out/` for GitHub Pages deployment.
 - Use **Start over** on any journey page to clear stored data immediately.
 - No analytics or server-side data collection.
 
+See [docs/security-and-privacy-architecture.md](docs/security-and-privacy-architecture.md) and the in-app **Security & privacy** page (`/security/`).
+
 ## Deployment
 
 GitHub Pages deployment runs automatically on push to `main` via `.github/workflows/deploy.yml`.

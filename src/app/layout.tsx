@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { SecurityMetaTags } from "@/components/security/security-meta-tags";
+
 import "./globals.css";
 
 const inter = Inter({
@@ -21,6 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en-GB">
+      <head>
+        <SecurityMetaTags />
+      </head>
       <body className={`${inter.variable} font-sans`}>{children}</body>
     </html>
   );
