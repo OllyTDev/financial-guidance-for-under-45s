@@ -3,24 +3,27 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { IncomeSection } from "@/components/guidance/everyday-living/income-section";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   CurrencyInput,
   parseCurrencyValue,
 } from "@/components/ui/currency-input";
+import { CurrencyInputWithPeriod } from "@/components/ui/currency-input-with-period";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { RadioGroup } from "@/components/ui/radio-group";
 import {
+  EVERYDAY_LIVING_REVIEW_PATH,
   type EverydayLivingData,
   type HousingType,
   getEverydayLivingData,
   isCouncilTaxEntered,
   isEverydayLivingComplete,
   isHousingAmountValid,
+  isIncomeSectionComplete,
   isMortgageZero,
   saveEverydayLivingData,
 } from "@/lib/everyday-living-storage";
-import { getSectionPath } from "@/lib/journey-sections";
 
 const COUNCIL_TAX_DISCOUNT_URL =
   "https://www.gov.uk/apply-for-council-tax-discount";
@@ -74,6 +77,7 @@ export function EverydayLivingForm() {
     });
   }
 
+  const showHousing = isIncomeSectionComplete(data);
   const housingAmountLabel =
     data.housingType === "rent"
       ? "How much is your rent?"
@@ -82,7 +86,7 @@ export function EverydayLivingForm() {
         : "How much is your rent/mortgage?";
 
   const showMortgageConfirm = isMortgageZero(data);
-  const showUtilities = isHousingAmountValid(data);
+  const showUtilities = showHousing && isHousingAmountValid(data);
   const showCouncilTaxFollowUp = isCouncilTaxEntered(data);
   const showReductionQuestion = data.livesAlone === true;
   const showCouncilTaxLink =
@@ -90,64 +94,70 @@ export function EverydayLivingForm() {
 
   return (
     <form className="space-y-8" onSubmit={(event) => event.preventDefault()}>
-      <RadioGroup
-        name="housing-type"
-        legend="Are you renting or do you have a mortgage?"
-        options={[
-          { value: "rent", label: "Renting" },
-          { value: "mortgage", label: "Mortgage" },
-        ]}
-        value={data.housingType}
-        onChange={handleHousingTypeChange}
-      />
+      <IncomeSection data={data} onUpdate={updateData} />
 
-      {data.housingType ? (
-        <CurrencyInput
-          id="housing-amount"
-          label={housingAmountLabel}
-          value={toInputValue(data.housingAmount)}
-          onChange={(value) =>
-            updateData({
-              housingAmount: parseCurrencyValue(value),
-              mortgagePaidOffConfirmed: false,
-            })
-          }
-        />
-      ) : null}
+      {showHousing ? (
+        <>
+          <RadioGroup
+            name="housing-type"
+            legend="Are you renting or do you have a mortgage?"
+            options={[
+              { value: "rent", label: "Renting" },
+              { value: "mortgage", label: "Mortgage" },
+            ]}
+            value={data.housingType}
+            onChange={handleHousingTypeChange}
+          />
 
-      {showMortgageConfirm ? (
-        <Checkbox
-          label="I confirm I've paid off my mortgage"
-          checked={data.mortgagePaidOffConfirmed}
-          onChange={(event) =>
-            updateData({ mortgagePaidOffConfirmed: event.target.checked })
-          }
-        />
-      ) : null}
+          {data.housingType ? (
+            <CurrencyInput
+              id="housing-amount"
+              label={housingAmountLabel}
+              value={toInputValue(data.housingAmount)}
+              onChange={(value) =>
+                updateData({
+                  housingAmount: parseCurrencyValue(value),
+                  mortgagePaidOffConfirmed: false,
+                })
+              }
+            />
+          ) : null}
 
-      {showUtilities ? (
-        <UtilitiesSection
-          data={data}
-          onUtilitiesIncluded={handleUtilitiesIncluded}
-          onUpdate={updateData}
-        />
-      ) : null}
+          {showMortgageConfirm ? (
+            <Checkbox
+              label="I confirm I've paid off my mortgage"
+              checked={data.mortgagePaidOffConfirmed}
+              onChange={(event) =>
+                updateData({ mortgagePaidOffConfirmed: event.target.checked })
+              }
+            />
+          ) : null}
 
-      {showCouncilTaxFollowUp ? (
-        <CouncilTaxSection
-          data={data}
-          showReductionQuestion={showReductionQuestion}
-          showCouncilTaxLink={showCouncilTaxLink}
-          onUpdate={updateData}
-        />
+          {showUtilities ? (
+            <UtilitiesSection
+              data={data}
+              onUtilitiesIncluded={handleUtilitiesIncluded}
+              onUpdate={updateData}
+            />
+          ) : null}
+
+          {showCouncilTaxFollowUp ? (
+            <CouncilTaxSection
+              data={data}
+              showReductionQuestion={showReductionQuestion}
+              showCouncilTaxLink={showCouncilTaxLink}
+              onUpdate={updateData}
+            />
+          ) : null}
+        </>
       ) : null}
 
       {isEverydayLivingComplete(data) ? (
         <Link
-          href={getSectionPath("emergency-funds")}
+          href={EVERYDAY_LIVING_REVIEW_PATH}
           className="inline-flex h-12 items-center justify-center rounded-lg bg-sand-800 px-8 text-base font-medium text-white transition-colors hover:bg-sand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand-800 focus-visible:ring-offset-2"
         >
-          Continue to Emergency Funds
+          Review your everyday living
         </Link>
       ) : null}
     </form>
@@ -177,37 +187,43 @@ function UtilitiesSection({
         />
       ) : null}
 
-      <CurrencyInput
+      <CurrencyInputWithPeriod
         id="water"
         label="Water"
         value={toInputValue(data.water)}
+        period={data.waterPeriod}
         disabled={data.utilitiesIncluded}
-        onChange={(value) =>
+        onValueChange={(value) =>
           onUpdate({ water: parseCurrencyValue(value) })
         }
+        onPeriodChange={(period) => onUpdate({ waterPeriod: period })}
       />
 
-      <CurrencyInput
+      <CurrencyInputWithPeriod
         id="gas-electric"
         label="Gas/electric"
         value={toInputValue(data.gasElectric)}
+        period={data.gasElectricPeriod}
         disabled={data.utilitiesIncluded}
-        onChange={(value) =>
+        onValueChange={(value) =>
           onUpdate({ gasElectric: parseCurrencyValue(value) })
         }
+        onPeriodChange={(period) => onUpdate({ gasElectricPeriod: period })}
       />
 
-      <CurrencyInput
+      <CurrencyInputWithPeriod
         id="council-tax"
         label="Council Tax"
         value={toInputValue(data.councilTax)}
-        onChange={(value) =>
+        period={data.councilTaxPeriod}
+        onValueChange={(value) =>
           onUpdate({
             councilTax: parseCurrencyValue(value),
             livesAlone: null,
             appliedCouncilTaxReduction: null,
           })
         }
+        onPeriodChange={(period) => onUpdate({ councilTaxPeriod: period })}
       />
     </fieldset>
   );
