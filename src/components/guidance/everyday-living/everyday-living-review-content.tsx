@@ -15,10 +15,9 @@ import { Select } from "@/components/ui/select";
 import { useFinanceJourneyGuard } from "@/hooks/use-finance-journey-guard";
 import {
   BUDGET_DEMO_OPTIONS,
+  buildEverydayLivingBreakdown,
   formatPounds,
-  getEffectiveMonthlyIncome,
-  getMonthlyBalance,
-  getMonthlyExpenditure,
+  type BreakdownLine,
 } from "@/lib/everyday-living-calculations";
 import {
   type EverydayLivingData,
@@ -59,10 +58,8 @@ export function EverydayLivingReviewContent() {
     );
   }
 
-  const monthlyIncome = getEffectiveMonthlyIncome(data, age);
-  const monthlyExpenditure = getMonthlyExpenditure(data);
-  const balance = getMonthlyBalance(data, age);
-  const isPositive = balance >= 0;
+  const breakdown = buildEverydayLivingBreakdown(data, age);
+  const isPositive = breakdown.balance >= 0;
 
   return (
     <PageShell showRestart restartSlot={<RestartButton />}>
@@ -82,13 +79,20 @@ export function EverydayLivingReviewContent() {
         <ContentCard className="space-y-6">
           <JourneyProgressCup currentStep={1} showYouAreHere className="mb-2" />
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <SummaryCard label="Monthly income" value={formatPounds(monthlyIncome)} />
-            <SummaryCard
-              label="Monthly expenditure"
-              value={formatPounds(monthlyExpenditure)}
-            />
-          </div>
+          <BreakdownSection
+            title="Income"
+            lines={breakdown.incomeLines}
+            adjustments={breakdown.taxLines}
+            total={breakdown.incomeTotal}
+            totalLabel="Net monthly income"
+          />
+
+          <BreakdownSection
+            title="Expenditure"
+            lines={breakdown.expenditureLines}
+            total={breakdown.expenditureTotal}
+            totalLabel="Total monthly expenditure"
+          />
 
           <div
             className={`rounded-xl border p-4 ${
@@ -103,15 +107,15 @@ export function EverydayLivingReviewContent() {
               ) : (
                 <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-700" />
               )}
-              <div>
+              <div className="w-full">
                 <p
                   className={`text-lg font-semibold ${
                     isPositive ? "text-emerald-900" : "text-red-900"
                   }`}
                 >
-                  {isPositive ? "Positive balance" : "Negative balance"}:{" "}
-                  {formatPounds(Math.abs(balance))}
-                  {isPositive ? " remaining" : " shortfall"} per month
+                  {formatPounds(breakdown.incomeTotal)} −{" "}
+                  {formatPounds(breakdown.expenditureTotal)} ={" "}
+                  {formatPounds(breakdown.balance)}
                 </p>
                 <p
                   className={`mt-2 text-sm ${
@@ -149,17 +153,71 @@ export function EverydayLivingReviewContent() {
   );
 }
 
-interface SummaryCardProps {
-  label: string;
-  value: string;
+interface BreakdownSectionProps {
+  title: string;
+  lines: BreakdownLine[];
+  adjustments?: BreakdownLine[];
+  total: number;
+  totalLabel: string;
 }
 
-function SummaryCard({ label, value }: SummaryCardProps) {
+function BreakdownSection({
+  title,
+  lines,
+  adjustments = [],
+  total,
+  totalLabel,
+}: BreakdownSectionProps) {
   return (
-    <div className="rounded-xl border border-sand-700/10 bg-cream-50 p-4">
-      <p className="text-sm text-sand-700">{label}</p>
-      <p className="mt-1 text-2xl font-semibold text-sand-900">{value}</p>
+    <div className="space-y-3">
+      <h2 className="text-lg font-medium text-sand-900">{title}</h2>
+      <div className="overflow-hidden rounded-xl border border-sand-700/10">
+        <table className="w-full text-sm">
+          <tbody>
+            {lines.map((line) => (
+              <BreakdownRow key={line.label} line={line} />
+            ))}
+            {adjustments.map((line) => (
+              <BreakdownRow key={line.label} line={line} muted />
+            ))}
+            <tr className="border-t border-sand-700/10 bg-cream-50 font-medium">
+              <td className="px-4 py-3 text-sand-900">{totalLabel}</td>
+              <td className="px-4 py-3 text-right text-sand-900">
+                {formatPounds(total)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+  );
+}
+
+function BreakdownRow({
+  line,
+  muted = false,
+}: {
+  line: BreakdownLine;
+  muted?: boolean;
+}) {
+  return (
+    <tr className="border-b border-sand-700/5 last:border-b-0">
+      <td className="px-4 py-3 text-sand-800">
+        {line.label}
+        {line.detail ? (
+          <span className="mt-0.5 block text-xs text-sand-600">
+            {line.detail}
+          </span>
+        ) : null}
+      </td>
+      <td
+        className={`px-4 py-3 text-right ${
+          muted ? "text-sand-600" : "text-sand-900"
+        }`}
+      >
+        {line.amount === 0 && line.detail ? "—" : formatPounds(line.amount)}
+      </td>
+    </tr>
   );
 }
 

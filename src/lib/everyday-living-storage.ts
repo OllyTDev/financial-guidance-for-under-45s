@@ -4,12 +4,23 @@ export type PaymentPeriod = "month" | "year";
 
 export type HousingType = "rent" | "mortgage";
 
-export interface EverydayLivingData {
-  income: number | null;
-  incomePeriod: PaymentPeriod;
+export type PensionContributionType = "monthly" | "percent";
+
+export interface IncomeEntry {
+  id: string;
+  amount: number | null;
+  period: PaymentPeriod;
   isPreTax: boolean | null;
+}
+
+export interface EverydayLivingData {
+  incomes: IncomeEntry[];
   receivingBenefits: boolean | null;
   usingJsaAsIncome: boolean;
+  hasWorkplacePension: boolean | null;
+  pensionContributionType: PensionContributionType | null;
+  pensionContributionAmount: number | null;
+  groceriesMonthly: number | null;
   housingType: HousingType | null;
   housingAmount: number | null;
   mortgagePaidOffConfirmed: boolean;
@@ -24,12 +35,23 @@ export interface EverydayLivingData {
   appliedCouncilTaxReduction: boolean | null;
 }
 
+export function createIncomeEntry(): IncomeEntry {
+  return {
+    id: crypto.randomUUID(),
+    amount: null,
+    period: "month",
+    isPreTax: null,
+  };
+}
+
 export const EMPTY_EVERYDAY_LIVING: EverydayLivingData = {
-  income: null,
-  incomePeriod: "month",
-  isPreTax: null,
+  incomes: [createIncomeEntry()],
   receivingBenefits: null,
   usingJsaAsIncome: false,
+  hasWorkplacePension: null,
+  pensionContributionType: null,
+  pensionContributionAmount: null,
+  groceriesMonthly: null,
   housingType: null,
   housingAmount: null,
   mortgagePaidOffConfirmed: false,
@@ -46,14 +68,43 @@ export const EMPTY_EVERYDAY_LIVING: EverydayLivingData = {
 
 const STORAGE_KEY = "fg-everyday-living";
 
+interface LegacyEverydayLivingData {
+  income?: number | null;
+  incomePeriod?: PaymentPeriod;
+  isPreTax?: boolean | null;
+}
+
+function migrateStoredData(
+  parsed: LegacyEverydayLivingData & Partial<EverydayLivingData>,
+): EverydayLivingData {
+  const base = { ...EMPTY_EVERYDAY_LIVING, ...parsed };
+
+  if (!parsed.incomes && parsed.income !== undefined) {
+    base.incomes = [
+      {
+        id: crypto.randomUUID(),
+        amount: parsed.income ?? null,
+        period: parsed.incomePeriod ?? "month",
+        isPreTax: parsed.isPreTax ?? null,
+      },
+    ];
+  }
+
+  if (!base.incomes?.length) {
+    base.incomes = [createIncomeEntry()];
+  }
+
+  return base;
+}
+
 export function getEverydayLivingData(): EverydayLivingData {
   const raw = getSessionStorage()?.getItem(STORAGE_KEY);
-  if (!raw) return { ...EMPTY_EVERYDAY_LIVING };
+  if (!raw) return { ...EMPTY_EVERYDAY_LIVING, incomes: [createIncomeEntry()] };
 
   try {
-    return { ...EMPTY_EVERYDAY_LIVING, ...JSON.parse(raw) };
+    return migrateStoredData(JSON.parse(raw));
   } catch {
-    return { ...EMPTY_EVERYDAY_LIVING };
+    return { ...EMPTY_EVERYDAY_LIVING, incomes: [createIncomeEntry()] };
   }
 }
 
@@ -65,16 +116,84 @@ export function clearEverydayLivingData(): void {
   getSessionStorage()?.removeItem(STORAGE_KEY);
 }
 
-export function isZeroIncome(data: EverydayLivingData): boolean {
-  return data.income === 0;
+export function toAnnualAmount(
+  amount: number,
+  period: PaymentPeriod,
+): number {
+  if (period === "year") return amount;
+  return amount * 12;
 }
 
-export function isIncomeSectionComplete(data: EverydayLivingData): boolean {
-  if (data.income === null || data.isPreTax === null) return false;
-  if (data.income > 0) return true;
+export function hasAnyIncomeEntered(data: EverydayLivingData): boolean {
+  return data.incomes.every((entry) => entry.amount !== null);
+}
+
+export function getTotalGrossAnnual(data: EverydayLivingData): number {
+  return data.incomes.reduce((total, entry) => {
+    if (entry.amount === null || entry.amount <= 0) return total;
+    return total + toAnnualAmount(entry.amount, entry.period);
+  }, 0);
+}
+
+export function isZeroIncome(data: EverydayLivingData): boolean {
+  if (!hasAnyIncomeEntered(data)) return false;
+  return getTotalGrossAnnual(data) === 0;
+}
+
+export function isIncomeEntriesComplete(data: EverydayLivingData): boolean {
+  if (!hasAnyIncomeEntered(data)) return false;
+
+  for (const entry of data.incomes) {
+    if (entry.amount === null) return false;
+    if (entry.amount > 0 && entry.isPreTax === null) return false;
+  }
+
+  if (!isZeroIncome(data)) return true;
   if (data.receivingBenefits === null) return false;
   if (data.receivingBenefits) return true;
   return data.usingJsaAsIncome;
+}
+
+export function getPensionValidationError(
+  data: EverydayLivingData,
+  monthlyGrossIncome: number,
+): string | null {
+  if (data.hasWorkplacePension !== true) return null;
+  if (!data.pensionContributionType || data.pensionContributionAmount === null) {
+    return "Please enter your pension contribution.";
+  }
+
+  if (data.pensionContributionType === "monthly") {
+    if (data.pensionContributionAmount > monthlyGrossIncome) {
+      return "Monthly pension contributions cannot exceed your income.";
+    }
+    return null;
+  }
+
+  if (
+    data.pensionContributionAmount < 1 ||
+    data.pensionContributionAmount > 40
+  ) {
+    return "Enter a percentage between 1% and 40%.";
+  }
+
+  return null;
+}
+
+export function isPensionSectionComplete(
+  data: EverydayLivingData,
+  monthlyGrossIncome: number,
+): boolean {
+  if (!isIncomeEntriesComplete(data)) return false;
+  if (data.hasWorkplacePension === null) return false;
+  if (!data.hasWorkplacePension) return true;
+  return getPensionValidationError(data, monthlyGrossIncome) === null;
+}
+
+export function isIncomeSectionComplete(data: EverydayLivingData): boolean {
+  const monthlyGross = getTotalGrossAnnual(data) / 12;
+  if (!isPensionSectionComplete(data, monthlyGross)) return false;
+  return data.groceriesMonthly !== null;
 }
 
 export function isMortgageZero(data: EverydayLivingData): boolean {
@@ -103,3 +222,6 @@ export function isEverydayLivingComplete(data: EverydayLivingData): boolean {
 
 export const EVERYDAY_LIVING_REVIEW_PATH =
   "/guidance/finances/everyday-living/review/";
+
+export const MIN_PENSION_PERCENT = 1;
+export const MAX_PENSION_PERCENT = 40;
