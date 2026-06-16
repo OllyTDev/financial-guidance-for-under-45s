@@ -1,3 +1,4 @@
+import { getSessionStorage } from "@/lib/browser-storage";
 import {
   getSectionFillPercent,
   JOURNEY_TOTAL_STEPS,
@@ -8,7 +9,7 @@ const JOURNEY_PROGRESS_KEY = "fg-journey-progress";
 export { JOURNEY_TOTAL_STEPS };
 
 export function getJourneyProgress(): number {
-  const value = sessionStorage.getItem(JOURNEY_PROGRESS_KEY);
+  const value = getSessionStorage()?.getItem(JOURNEY_PROGRESS_KEY);
   if (!value) return 0;
 
   const progress = Number.parseInt(value, 10);
@@ -16,7 +17,7 @@ export function getJourneyProgress(): number {
 }
 
 export function setJourneyProgress(step: number): void {
-  sessionStorage.setItem(JOURNEY_PROGRESS_KEY, String(step));
+  getSessionStorage()?.setItem(JOURNEY_PROGRESS_KEY, String(step));
 }
 
 export function getJourneyFillPercent(step: number = getJourneyProgress()): number {
@@ -24,5 +25,5 @@ export function getJourneyFillPercent(step: number = getJourneyProgress()): numb
 }
 
 export function clearJourneyProgress(): void {
-  sessionStorage.removeItem(JOURNEY_PROGRESS_KEY);
+  getSessionStorage()?.removeItem(JOURNEY_PROGRESS_KEY);
 }

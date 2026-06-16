@@ -15,6 +15,7 @@ import { ExternalLink } from "@/components/ui/external-link";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { GOVUK_COUNCIL_TAX_DISCOUNT_URL } from "@/lib/security/allowed-external-urls";
 import {
+  EMPTY_EVERYDAY_LIVING,
   EVERYDAY_LIVING_REVIEW_PATH,
   type EverydayLivingData,
   type HousingType,
@@ -42,13 +43,18 @@ function radioToBool(value: string): boolean {
 }
 
 export function EverydayLivingForm() {
-  const [data, setData] = useState<EverydayLivingData>(() =>
-    getEverydayLivingData(),
-  );
+  const [data, setData] = useState<EverydayLivingData>(EMPTY_EVERYDAY_LIVING);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
+    setData(getEverydayLivingData());
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isHydrated) return;
     saveEverydayLivingData(data);
-  }, [data]);
+  }, [data, isHydrated]);
 
   function updateData(patch: Partial<EverydayLivingData>) {
     setData((current) => ({ ...current, ...patch }));

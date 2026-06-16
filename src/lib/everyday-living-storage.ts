@@ -1,3 +1,5 @@
+import { getSessionStorage } from "@/lib/browser-storage";
+
 export type PaymentPeriod = "month" | "year";
 
 export type HousingType = "rent" | "mortgage";
@@ -45,7 +47,7 @@ export const EMPTY_EVERYDAY_LIVING: EverydayLivingData = {
 const STORAGE_KEY = "fg-everyday-living";
 
 export function getEverydayLivingData(): EverydayLivingData {
-  const raw = sessionStorage.getItem(STORAGE_KEY);
+  const raw = getSessionStorage()?.getItem(STORAGE_KEY);
   if (!raw) return { ...EMPTY_EVERYDAY_LIVING };
 
   try {
@@ -56,11 +58,11 @@ export function getEverydayLivingData(): EverydayLivingData {
 }
 
 export function saveEverydayLivingData(data: EverydayLivingData): void {
-  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  getSessionStorage()?.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
 export function clearEverydayLivingData(): void {
-  sessionStorage.removeItem(STORAGE_KEY);
+  getSessionStorage()?.removeItem(STORAGE_KEY);
 }
 
 export function isZeroIncome(data: EverydayLivingData): boolean {

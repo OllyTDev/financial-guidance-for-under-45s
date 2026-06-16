@@ -21,6 +21,7 @@ import {
   getMonthlyExpenditure,
 } from "@/lib/everyday-living-calculations";
 import {
+  type EverydayLivingData,
   getEverydayLivingData,
   isEverydayLivingComplete,
 } from "@/lib/everyday-living-storage";
@@ -31,11 +32,16 @@ import { getUserAge } from "@/lib/session-storage";
 export function EverydayLivingReviewContent() {
   const router = useRouter();
   const isReady = useFinanceJourneyGuard();
-  const [data] = useState(() => getEverydayLivingData());
-  const age = getUserAge();
+  const [data, setData] = useState<EverydayLivingData | null>(null);
+  const [age, setAge] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!isReady) return;
+    setData(getEverydayLivingData());
+    setAge(getUserAge());
+  }, []);
+
+  useEffect(() => {
+    if (!isReady || data === null) return;
     setJourneyProgress(1);
 
     if (!isEverydayLivingComplete(data)) {
@@ -43,7 +49,7 @@ export function EverydayLivingReviewContent() {
     }
   }, [isReady, data, router]);
 
-  if (!isReady || !isEverydayLivingComplete(data)) {
+  if (!isReady || data === null || !isEverydayLivingComplete(data)) {
     return (
       <PageShell showRestart restartSlot={<RestartButton />}>
         <ContentCard>
