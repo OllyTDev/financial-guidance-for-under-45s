@@ -8,9 +8,8 @@ import { useEffect, useState } from "react";
 import { JourneyProgressCup } from "@/components/guidance/journey-progress-cup";
 import {
   ContentCard,
-  PageShell,
 } from "@/components/layout/page-shell";
-import { RestartButton } from "@/components/layout/restart-button";
+import { FinanceJourneyShell } from "@/components/layout/finance-journey-shell";
 import { Select } from "@/components/ui/select";
 import { useFinanceJourneyGuard } from "@/hooks/use-finance-journey-guard";
 import {
@@ -50,34 +49,47 @@ export function EverydayLivingReviewContent() {
 
   if (!isReady || data === null || !isEverydayLivingComplete(data)) {
     return (
-      <PageShell showRestart restartSlot={<RestartButton />}>
+      <FinanceJourneyShell
+        activeSlug="everyday-living"
+        header={
+          <div className="space-y-3">
+            <p className="text-sm font-medium uppercase tracking-wide text-sand-700">
+              Everyday living review
+            </p>
+            <h1 className="text-3xl font-semibold text-sand-900 sm:text-4xl">
+              Income vs expenditure
+            </h1>
+          </div>
+        }
+      >
         <ContentCard>
           <p className="text-sand-700">Loading…</p>
         </ContentCard>
-      </PageShell>
+      </FinanceJourneyShell>
     );
   }
 
   const breakdown = buildEverydayLivingBreakdown(data, age);
   const isPositive = breakdown.balance >= 0;
 
-  return (
-    <PageShell showRestart restartSlot={<RestartButton />}>
-      <div className="flex flex-1 flex-col gap-8">
-        <div className="space-y-3">
-          <p className="text-sm font-medium uppercase tracking-wide text-sand-700">
-            Everyday living review
-          </p>
-          <h1 className="text-3xl font-semibold text-sand-900 sm:text-4xl">
-            Income vs expenditure
-          </h1>
-          <p className="text-sand-700">
-            All figures below are shown on a monthly basis.
-          </p>
-        </div>
+  const header = (
+    <div className="space-y-3">
+      <p className="text-sm font-medium uppercase tracking-wide text-sand-700">
+        Everyday living review
+      </p>
+      <h1 className="text-3xl font-semibold text-sand-900 sm:text-4xl">
+        Income vs expenditure
+      </h1>
+      <p className="text-sand-700">
+        All figures below are shown on a monthly basis.
+      </p>
+    </div>
+  );
 
-        <ContentCard className="space-y-6">
-          <JourneyProgressCup currentStep={1} showYouAreHere className="mb-2" />
+  return (
+    <FinanceJourneyShell activeSlug="everyday-living" header={header}>
+      <ContentCard className="space-y-6">
+        <JourneyProgressCup currentStep={1} showYouAreHere className="mb-2" />
 
           <BreakdownSection
             title="Income"
@@ -148,8 +160,7 @@ export function EverydayLivingReviewContent() {
             Edit your answers
           </Link>
         </ContentCard>
-      </div>
-    </PageShell>
+    </FinanceJourneyShell>
   );
 }
 
