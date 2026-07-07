@@ -1,5 +1,5 @@
 /**
- * UK income tax (England, Wales & Northern Ireland) — 2025/26 tax year.
+ * UK income tax (England, Wales & Northern Ireland) - 2025/26 tax year.
  * Scotland uses different bands; not modelled here.
  * Simplified: full personal allowance, no taper above £100k.
  */

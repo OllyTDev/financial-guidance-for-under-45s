@@ -55,7 +55,7 @@ export default function SecurityPage() {
             </h2>
             <p>
               Links to government guidance (GOV.UK) open in a new tab and use an
-              allowlist — only approved official URLs are used in this app. We
+              allowlist. Only approved official URLs are used in this app. We
               never construct external links from data you type.
             </p>
           </section>
@@ -80,7 +80,7 @@ export default function SecurityPage() {
               Anyone can copy a public website and host a malicious version
               elsewhere. We cannot prevent that. Only use this tool at the
               official address shown above. Do not enter financial details into
-              sites that look similar but use a different URL.
+              sites that look similar but use a different URL. Please report any suspicious sites to us.
             </p>
           </section>
 

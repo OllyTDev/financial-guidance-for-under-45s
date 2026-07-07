@@ -105,7 +105,7 @@ export function EmergencyFundsForm() {
         <h2 className="text-sm font-medium text-sand-800">Your emergency fund target</h2>
         <p className="text-sm text-sand-700">
           We recommend saving roughly <strong>one month&apos;s income</strong> for
-          emergencies — enough to cover a sudden bill or short gap without
+          emergencies. Enough to cover a sudden bill or short gap without
           turning to debt.
         </p>
         {showTargetInfo ? (
@@ -190,7 +190,7 @@ function SavingsAccountInfoPanel() {
       </p>
       <p>
         <strong>Easy access</strong> accounts let you withdraw money whenever
-        you need it — useful for an emergency fund you might tap at short notice.
+        you need it. Useful for an emergency fund you might tap into when required.
       </p>
       <p>
         <strong>Regular savers</strong> often pay higher interest, but you
@@ -199,12 +199,12 @@ function SavingsAccountInfoPanel() {
       </p>
       <p>
         <ExternalLink href={MSE_SAVINGS_ACCOUNTS_URL}>
-          Compare easy access savings accounts on MoneySavingExpert
+          MoneySavingExpert has a good guide on savings accounts here.
         </ExternalLink>
       </p>
       <p className="text-xs text-sand-600">
-        We have no association with MoneySavingExpert. We link to them because
-        we think they generally do good work, and that page is regularly
+        We have no association with <strong>MoneySavingExpert</strong>. We link to them because
+        we think they do good work, and that page is regularly
         updated.
       </p>
     </div>

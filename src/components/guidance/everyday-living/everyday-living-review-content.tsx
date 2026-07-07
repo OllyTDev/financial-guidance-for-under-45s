@@ -146,22 +146,35 @@ export function EverydayLivingReviewContent() {
           </div>
 
           {isPositive ? (
-            <Link
-              href={getSectionPath("emergency-funds")}
-              className="inline-flex h-12 items-center justify-center rounded-lg bg-sand-800 px-8 text-base font-medium text-white transition-colors hover:bg-sand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand-800 focus-visible:ring-offset-2"
-            >
-              Continue to Emergency Funds
-            </Link>
+            <div className="space-y-4 pt-2">
+              <Link
+                href={getSectionPath("emergency-funds")}
+                className="inline-flex h-12 items-center justify-center rounded-lg bg-sand-800 px-8 text-base font-medium text-white transition-colors hover:bg-sand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand-800 focus-visible:ring-offset-2"
+              >
+                Continue to Emergency Funds
+              </Link>
+              <div className="flex justify-end">
+                <Link
+                  href={getSectionQuestionsPath("everyday-living")}
+                  className="inline-block text-sm text-sand-700 underline decoration-sand-700/30 underline-offset-4 hover:decoration-sand-800"
+                >
+                  Edit your answers
+                </Link>
+              </div>
+            </div>
           ) : (
-            <BudgetHelpSection />
+            <>
+              <BudgetHelpSection />
+              <div className="flex justify-end pt-2">
+                <Link
+                  href={getSectionQuestionsPath("everyday-living")}
+                  className="inline-block text-sm text-sand-700 underline decoration-sand-700/30 underline-offset-4 hover:decoration-sand-800"
+                >
+                  Edit your answers
+                </Link>
+              </div>
+            </>
           )}
-
-          <Link
-            href={getSectionQuestionsPath("everyday-living")}
-            className="inline-block text-sm text-sand-700 underline decoration-sand-700/30 underline-offset-4 hover:decoration-sand-800"
-          >
-            Edit your answers
-          </Link>
         </ContentCard>
     </FinanceJourneyShell>
   );
