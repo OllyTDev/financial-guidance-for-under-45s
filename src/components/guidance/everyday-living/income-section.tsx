@@ -38,6 +38,7 @@ import { cn } from "@/lib/utils";
 interface IncomeSectionProps {
   data: EverydayLivingData;
   onUpdate: (patch: Partial<EverydayLivingData>) => void;
+  incomeOnly?: boolean;
 }
 
 function toInputValue(value: number | null): string {
@@ -61,7 +62,11 @@ function sanitizePercentInput(value: string): string {
   return `${parts[0]}.${parts.slice(1).join("")}`;
 }
 
-export function IncomeSection({ data, onUpdate }: IncomeSectionProps) {
+export function IncomeSection({
+  data,
+  onUpdate,
+  incomeOnly = false,
+}: IncomeSectionProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const age = getUserAge();
   const monthlyGross = getTotalGrossAnnual(data) / 12;
@@ -159,7 +164,7 @@ export function IncomeSection({ data, onUpdate }: IncomeSectionProps) {
         />
       ) : null}
 
-      {showPensionSection ? (
+      {showPensionSection && !incomeOnly ? (
         <PensionSection
           data={data}
           monthlyGross={monthlyGross}
@@ -168,7 +173,7 @@ export function IncomeSection({ data, onUpdate }: IncomeSectionProps) {
         />
       ) : null}
 
-      {showGroceriesSection ? (
+      {showGroceriesSection && !incomeOnly ? (
         <CurrencyInput
           id="groceries"
           label="Roughly how much a month do you spend on groceries?"

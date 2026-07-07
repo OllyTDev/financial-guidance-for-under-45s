@@ -1,13 +1,21 @@
-export const ALLOWED_EXTERNAL_HOSTS = ["www.gov.uk", "gov.uk"] as const;
+export const ALLOWED_EXTERNAL_HOSTS = [
+  "www.gov.uk",
+  "gov.uk",
+  "www.moneysavingexpert.com",
+] as const;
 
 export const GOVUK_COUNCIL_TAX_DISCOUNT_URL =
   "https://www.gov.uk/apply-for-council-tax-discount";
 
 export const GOVUK_JSA_URL = "https://www.gov.uk/jobseekers-allowance";
 
+export const MSE_SAVINGS_ACCOUNTS_URL =
+  "https://www.moneysavingexpert.com/savings/savings-accounts-best-interest/#easyaccess";
+
 export const ALLOWED_EXTERNAL_URLS = [
   GOVUK_COUNCIL_TAX_DISCOUNT_URL,
   GOVUK_JSA_URL,
+  MSE_SAVINGS_ACCOUNTS_URL,
 ] as const;
 
 export type AllowedExternalUrl = (typeof ALLOWED_EXTERNAL_URLS)[number];

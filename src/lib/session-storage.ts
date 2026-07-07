@@ -1,5 +1,6 @@
 import { getSessionStorage } from "@/lib/browser-storage";
 import { clearEverydayLivingData } from "@/lib/everyday-living-storage";
+import { clearEmergencyFundsData } from "@/lib/emergency-funds-storage";
 import { clearJourneyProgress } from "@/lib/journey-progress";
 
 const USER_AGE_KEY = "fg-user-age";
@@ -20,4 +21,5 @@ export function clearUserData(): void {
   getSessionStorage()?.removeItem(USER_AGE_KEY);
   clearJourneyProgress();
   clearEverydayLivingData();
+  clearEmergencyFundsData();
 }
