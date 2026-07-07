@@ -18,6 +18,7 @@ export interface EverydayLivingData {
   receivingBenefits: boolean | null;
   usingJsaAsIncome: boolean;
   hasWorkplacePension: boolean | null;
+  isSelfEmployed: boolean | null;
   pensionContributionType: PensionContributionType | null;
   pensionContributionAmount: number | null;
   groceriesMonthly: number | null;
@@ -49,6 +50,7 @@ export const EMPTY_EVERYDAY_LIVING: EverydayLivingData = {
   receivingBenefits: null,
   usingJsaAsIncome: false,
   hasWorkplacePension: null,
+  isSelfEmployed: null,
   pensionContributionType: null,
   pensionContributionAmount: null,
   groceriesMonthly: null,
@@ -186,7 +188,7 @@ export function isPensionSectionComplete(
 ): boolean {
   if (!isIncomeEntriesComplete(data)) return false;
   if (data.hasWorkplacePension === null) return false;
-  if (!data.hasWorkplacePension) return true;
+  if (!data.hasWorkplacePension) return data.isSelfEmployed !== null;
   return getPensionValidationError(data, monthlyGrossIncome) === null;
 }
 

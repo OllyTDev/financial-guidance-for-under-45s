@@ -26,6 +26,7 @@ import {
   getPensionValidationError,
   getTotalGrossAnnual,
   isIncomeEntriesComplete,
+  isPensionSectionComplete,
   isZeroIncome,
   MAX_PENSION_PERCENT,
   MIN_PENSION_PERCENT,
@@ -71,9 +72,7 @@ export function IncomeSection({ data, onUpdate }: IncomeSectionProps) {
     showBenefitsQuestion && data.receivingBenefits === false;
   const showPensionSection = isIncomeEntriesComplete(data);
   const showGroceriesSection =
-    showPensionSection &&
-    data.hasWorkplacePension !== null &&
-    (data.hasWorkplacePension === false || pensionError === null);
+    showPensionSection && isPensionSectionComplete(data, monthlyGross);
 
   const jsaWeekly = getJsaWeeklyAmount(age);
   const jsaMonthly = getJsaMonthlyAmount(age);
@@ -286,11 +285,33 @@ function PensionSection({
         onChange={(value) =>
           onUpdate({
             hasWorkplacePension: radioToBool(value),
+            isSelfEmployed: null,
             pensionContributionType: null,
             pensionContributionAmount: null,
           })
         }
       />
+
+      {data.hasWorkplacePension === false ? (
+        <>
+          <RadioGroup
+            name="self-employed"
+            legend="Are you self-employed?"
+            options={[
+              { value: "yes", label: "Yes" },
+              { value: "no", label: "No" },
+            ]}
+            value={boolToRadio(data.isSelfEmployed)}
+            onChange={(value) =>
+              onUpdate({ isSelfEmployed: radioToBool(value) })
+            }
+          />
+
+          {data.isSelfEmployed === false ? (
+            <WorkplacePensionNotice />
+          ) : null}
+        </>
+      ) : null}
 
       {data.hasWorkplacePension ? (
         <>
@@ -350,6 +371,22 @@ function PensionSection({
           ) : null}
         </>
       ) : null}
+    </div>
+  );
+}
+
+function WorkplacePensionNotice() {
+  return (
+    <div
+      className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+      role="note"
+    >
+      <p>
+        In the UK, if you&apos;re employed and earn more than £10,000 a year
+        (and are aged 22 to state pension age), your employer must
+        automatically enrol you into a workplace pension. You should have one in
+        place. Ask your employer for details.
+      </p>
     </div>
   );
 }

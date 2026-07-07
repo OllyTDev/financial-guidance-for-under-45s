@@ -5,7 +5,7 @@ export interface SectionIntro {
 export const SECTION_INTROS: Record<string, SectionIntro> = {
   "everyday-living": {
     paragraphs: [
-      "Managing your finances can be complicated. This journey takes you through step by step at the big things you should be thinking about. We start at here at everyday living..",
+      "Managing your finances can be complicated. This journey takes you through step by step at the big things you should be thinking about. We start at here at everyday living.",
       "Everyday living covers the regular costs of running your household. Things like rent or mortgage, bills, food, and day-to-day spending.",
       "In this section we'll try to see if you're day to day costs are covered. If they are, great! If not, we'll help you think about how to make some adjustments.",
       
