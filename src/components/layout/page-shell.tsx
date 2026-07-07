@@ -69,3 +69,7 @@ export function PrivacyBadge({ className }: PrivacyBadgeProps) {
     </div>
   );
 }
+
+export function PrivacyFooter({ className }: PrivacyBadgeProps) {
+  return <PrivacyBadge className={className} />;
+}
