@@ -6,7 +6,7 @@ export interface SectionIntro {
 export const SECTION_INTROS: Record<string, SectionIntro> = {
   "everyday-living": {
     paragraphs: [
-      "Managing your finances can be complicated. This journey takes you through step by step at the big things you should be thinking about. We start at here at everyday living.",
+      "Managing your finances can be **complicated**. This journey takes you through step by step at the big things you should be thinking about. We start at here at **everyday living**.",
       "Everyday living covers the regular costs of running your household. Things like rent or mortgage, bills, food, and day-to-day spending.",
       "In this section we'll try to see if you're day to day costs are covered. If they are, great! If not, we'll help you think about how to make some adjustments.",
       
@@ -15,9 +15,11 @@ export const SECTION_INTROS: Record<string, SectionIntro> = {
   "emergency-funds": {
     paragraphs: [
       "Next is **emergency funds**. This is money set aside for unexpected costs. Things like a broken phone, a period without work, or an urgent repair.",
-      "Ideally, this will equal about **1 month's worth of your income**` .",
-      "**Why do this before thinking about debt?** This fund is designed to cover you in very sudden needs. Without it, you're likely to end up in debt. Paying off debt is important, but not as important as having that initial safety net.",
-      "**Why only one month?** We want to start removing debt as quickly as possible. If you have a month's worth of income saved, you can start paying off debt without having that worry of not being able to pay for something in an emergency.",
+      "Ideally, this will equal about **1 month's worth of your income**.",
+      "**Why do this before thinking about debt?**",
+      "This fund is designed to cover you in very sudden needs. Without it, you're likely to end up in debt. Paying off debt is important, but not as important as having that initial safety net.",
+      "**Why only one month?**",
+      "We want to start removing debt as quickly as possible. If you have a month's worth of income saved, you can start paying off debt without having that worry of not being able to pay for something in an emergency.",
     ],
   },
   debt: {
@@ -31,6 +33,7 @@ export const SECTION_INTROS: Record<string, SectionIntro> = {
   "easy-access-savings": {
     paragraphs: [
       "Next up is **easy access savings**. This is money you can get to quickly, without penalties. Useful for short-term goals like trips or a new laptop, or for larger emergency expenses like boiler or car repairs.",
+      "Ideally, this will equal about **6-12 months' worth of your income**.",
       "Here we'll look at how much you could save and what goals you would like to save for.",
       "**Don't include life purchases** in this section such as a house, a new car, or a wedding. We'll cover those in the next section.",
       "We'll also explain what the difference between a savings account and an ISA is, and how to choose the right one for you.",
