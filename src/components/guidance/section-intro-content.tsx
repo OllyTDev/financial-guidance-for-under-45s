@@ -12,6 +12,7 @@ import {
   getSectionQuestionsPath,
   type JourneySection,
 } from "@/lib/journey-sections";
+import { IntroMarkdown } from "@/components/guidance/intro-markdown";
 import { getSectionIntro } from "@/lib/section-intros";
 
 interface SectionIntroContentProps {
@@ -59,7 +60,9 @@ export function SectionIntroContent({ section }: SectionIntroContentProps) {
 
         <div className="space-y-4 text-sand-700">
           {intro.paragraphs.map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
+            <p key={index}>
+              <IntroMarkdown text={paragraph} />
+            </p>
           ))}
         </div>
 
