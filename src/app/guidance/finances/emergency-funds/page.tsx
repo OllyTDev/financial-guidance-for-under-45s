@@ -1,9 +1,9 @@
-import { FinanceSectionContent } from "@/components/guidance/finance-section-content";
+import { SectionIntroContent } from "@/components/guidance/section-intro-content";
 import { getSectionBySlug } from "@/lib/journey-sections";
 import { notFound } from "next/navigation";
 
-export default function EmergencyFundsPage() {
+export default function EmergencyFundsIntroPage() {
   const section = getSectionBySlug("emergency-funds");
   if (!section) notFound();
-  return <FinanceSectionContent section={section} />;
+  return <SectionIntroContent section={section} />;
 }

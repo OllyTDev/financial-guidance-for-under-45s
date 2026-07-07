@@ -58,6 +58,10 @@ export function getSectionPath(slug: string): string {
   return `/guidance/finances/${slug}/`;
 }
 
+export function getSectionQuestionsPath(slug: string): string {
+  return `/guidance/finances/${slug}/questions/`;
+}
+
 export function getNextSection(step: number): JourneySection | undefined {
   return getSectionByStep(step + 1);
 }

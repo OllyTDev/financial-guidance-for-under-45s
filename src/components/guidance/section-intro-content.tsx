@@ -9,18 +9,18 @@ import { FinanceJourneyShell } from "@/components/layout/finance-journey-shell";
 import { useFinanceJourneyGuard } from "@/hooks/use-finance-journey-guard";
 import { setJourneyProgress } from "@/lib/journey-progress";
 import {
-  getNextSection,
-  getSectionPath,
+  getSectionQuestionsPath,
   type JourneySection,
 } from "@/lib/journey-sections";
+import { getSectionIntro } from "@/lib/section-intros";
 
-interface FinanceSectionContentProps {
+interface SectionIntroContentProps {
   section: JourneySection;
 }
 
-export function FinanceSectionContent({ section }: FinanceSectionContentProps) {
+export function SectionIntroContent({ section }: SectionIntroContentProps) {
   const isReady = useFinanceJourneyGuard();
-  const nextSection = getNextSection(section.step);
+  const intro = getSectionIntro(section.slug);
 
   useEffect(() => {
     if (!isReady) return;
@@ -38,7 +38,7 @@ export function FinanceSectionContent({ section }: FinanceSectionContentProps) {
     </div>
   );
 
-  if (!isReady) {
+  if (!isReady || !intro) {
     return (
       <FinanceJourneyShell activeSlug={section.slug} header={header}>
         <ContentCard>
@@ -50,35 +50,27 @@ export function FinanceSectionContent({ section }: FinanceSectionContentProps) {
 
   return (
     <FinanceJourneyShell activeSlug={section.slug} header={header}>
-      <ContentCard>
+      <ContentCard className="space-y-6">
         <JourneyProgressCup
           currentStep={section.step}
           showYouAreHere
-          className="mb-6"
+          className="mb-2"
         />
 
-        <p className="text-sand-700">
-          We&apos;ll gather information about your{" "}
-          <span className="font-medium text-sand-900">
-            {section.title.toLowerCase()}
-          </span>{" "}
-          here. Content for this step is coming soon.
-        </p>
+        <div className="space-y-4 text-sand-700">
+          {intro.paragraphs.map((paragraph, index) => (
+            <p key={index}>{paragraph}</p>
+          ))}
+        </div>
 
-        {nextSection ? (
-          <div className="mt-8">
-            <Link
-              href={getSectionPath(nextSection.slug)}
-              className="inline-flex h-12 items-center justify-center rounded-lg bg-sand-800 px-8 text-base font-medium text-white transition-colors hover:bg-sand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand-800 focus-visible:ring-offset-2"
-            >
-              Continue to {nextSection.title}
-            </Link>
-          </div>
-        ) : (
-          <p className="mt-8 text-sm text-sand-700">
-            You&apos;ve reached the top of your financial picture for now.
-          </p>
-        )}
+        <div>
+          <Link
+            href={getSectionQuestionsPath(section.slug)}
+            className="inline-flex h-12 items-center justify-center rounded-lg bg-sand-800 px-8 text-base font-medium text-white transition-colors hover:bg-sand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand-800 focus-visible:ring-offset-2"
+          >
+            Continue
+          </Link>
+        </div>
       </ContentCard>
     </FinanceJourneyShell>
   );

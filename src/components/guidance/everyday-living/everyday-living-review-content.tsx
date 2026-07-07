@@ -24,7 +24,10 @@ import {
   isEverydayLivingComplete,
 } from "@/lib/everyday-living-storage";
 import { setJourneyProgress } from "@/lib/journey-progress";
-import { getSectionPath } from "@/lib/journey-sections";
+import {
+  getSectionPath,
+  getSectionQuestionsPath,
+} from "@/lib/journey-sections";
 import { getUserAge } from "@/lib/session-storage";
 
 export function EverydayLivingReviewContent() {
@@ -43,7 +46,7 @@ export function EverydayLivingReviewContent() {
     setJourneyProgress(1);
 
     if (!isEverydayLivingComplete(data)) {
-      router.replace("/guidance/finances/everyday-living/");
+      router.replace(getSectionQuestionsPath("everyday-living"));
     }
   }, [isReady, data, router]);
 
@@ -154,7 +157,7 @@ export function EverydayLivingReviewContent() {
           )}
 
           <Link
-            href="/guidance/finances/everyday-living/"
+            href={getSectionQuestionsPath("everyday-living")}
             className="inline-block text-sm text-sand-700 underline decoration-sand-700/30 underline-offset-4 hover:decoration-sand-800"
           >
             Edit your answers
